@@ -6,7 +6,9 @@ import org.example.miniprojet.entities.Contact;
 import org.example.miniprojet.entities.Role;
 import org.example.miniprojet.entities.User;
 import org.example.miniprojet.enums.FileType;
+import org.example.miniprojet.enums.JobTitle;
 import org.example.miniprojet.enums.RoleName;
+import org.example.miniprojet.mappers.ContactMapper;
 import org.example.miniprojet.repositories.ContactRepository;
 import org.example.miniprojet.repositories.RoleRepository;
 import org.example.miniprojet.repositories.UserRepository;
@@ -38,9 +40,14 @@ public class ContactServiceImpl implements ContactService{
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private ContactMapper contactMapper;
+
     @Override
-    public List<Contact> getAllContacts() {
-        return contactRepository.findAll();
+    public List<ContactDTO> getAllContacts() {
+        return contactRepository.findAll().stream().map(
+                contact -> contactMapper.toDTO(contact)
+        ).toList();
     }
 
     @Override
@@ -86,7 +93,8 @@ public class ContactServiceImpl implements ContactService{
             contactToSave.setPhotoPath(FileManager.savePhoto(photo, contact.username()));
 
         Contact contact1 = contactRepository.save(contactToSave);
-        sendMailToContact(contact1.getId());
+        if(contact.email() != null)
+            sendMailToContact(contact1.getId());
         return contact1;
     }
 
@@ -148,5 +156,15 @@ public class ContactServiceImpl implements ContactService{
             Contact contact = optional.get();
             emailService.sendMailToContact(contact.getEmail(), contact.getUsername(), contact.getPassword());
         }
+    }
+
+    @Override
+    public Contact updateJobTitle(Long id, JobTitle jobTitle) {
+        Contact contact = contactRepository.findById(id).orElse(null);
+        if(contact == null)
+            return null;
+
+        contact.setJobTitle(jobTitle);
+        return contactRepository.save(contact);
     }
 }

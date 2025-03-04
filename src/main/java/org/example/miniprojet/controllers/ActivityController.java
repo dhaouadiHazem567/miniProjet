@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/contacts")
+@RequestMapping("/activities")
 @Slf4j
 public class ActivityController {
 

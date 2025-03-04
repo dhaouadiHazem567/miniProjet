@@ -34,6 +34,7 @@ public class User implements Serializable {
     String username;
     String password;
     String photoPath;
+    int code;
 
     @CreationTimestamp
     LocalDateTime createdAt;

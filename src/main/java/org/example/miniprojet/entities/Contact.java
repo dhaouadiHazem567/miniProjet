@@ -30,7 +30,7 @@ public class Contact extends User implements Serializable {
     @Embedded
     Address address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contact_owner_id")
             @JsonIgnore
     User contactOwner;

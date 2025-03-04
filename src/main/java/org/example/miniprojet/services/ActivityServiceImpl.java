@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.miniprojet.DTO.ActivityDTO;
 import org.example.miniprojet.entities.Activity;
 import org.example.miniprojet.entities.Contact;
+import org.example.miniprojet.entities.User;
 import org.example.miniprojet.repositories.ActivityRepository;
 import org.example.miniprojet.repositories.ContactRepository;
 import org.hibernate.Hibernate;
@@ -16,6 +17,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -49,7 +52,14 @@ public class ActivityServiceImpl implements ActivityService{
         if(file != null && !file.isEmpty())
             activityToSave.setDocumentPath(FileManager.saveFile(file, activity.date(), activity.typeActivity()));
 
-        return activityRepository.save(activityToSave);
+        Activity savedActivity = activityRepository.save(activityToSave);
+
+        if(activity.contacts() != null && !activity.contacts().isEmpty()){
+            for(String s: activity.contacts())
+                savedActivity = addContactToActivity(s, savedActivity.getId());
+        }
+
+        return activityRepository.save(savedActivity);
     }
 
     @Override

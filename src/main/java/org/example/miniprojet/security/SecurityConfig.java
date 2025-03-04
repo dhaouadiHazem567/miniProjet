@@ -23,7 +23,7 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable());
         httpSecurity.cors(cors -> cors.configurationSource(request -> {
             var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
-            corsConfiguration.setAllowedOrigins(List.of("http://localhost:8080/swagger-ui/index.html#/"));
+            corsConfiguration.setAllowedOrigins(List.of("http://localhost:8080/swagger-ui/index.html#/", "http://localhost:4200"));
             corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             corsConfiguration.setAllowedHeaders(List.of("*"));
             corsConfiguration.setAllowCredentials(true);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.miniprojet.DTO.ContactDTO;
 import org.example.miniprojet.entities.Contact;
+import org.example.miniprojet.enums.JobTitle;
 import org.example.miniprojet.services.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class ContactController {
     ContactService contactService;
 
     @GetMapping("/getAllContacts")
-    public ResponseEntity<List<Contact>> getAllContacts() {
+    public ResponseEntity<List<ContactDTO>> getAllContacts() {
         return ResponseEntity.ok(contactService.getAllContacts());
     }
 
@@ -36,7 +37,7 @@ public class ContactController {
         }
     }
 
-    @PostMapping(path = "/addContact", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/createContact", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Contact> addContact(@RequestParam String contactJson, @RequestParam(value = "photo", required = false) MultipartFile photo) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -76,6 +77,16 @@ public class ContactController {
         try {
             return ResponseEntity.ok(contactService.getContactPhoto(id));
         } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @PutMapping("/updateJobTitle/{id}/{jobTitle}")
+    public ResponseEntity<Contact> updateJobTitle(@PathVariable Long id, @PathVariable JobTitle jobTitle) {
+        try {
+            return ResponseEntity.ok(contactService.updateJobTitle(id, jobTitle));
+        }
+        catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
     }
